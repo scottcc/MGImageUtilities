@@ -68,7 +68,7 @@
 				destX = 0.0;
 				destY = round((scaledHeight - targetHeight) / 2.0);
 			}
-		} else if (resizeMethod == MGImageResizeCropEnd) {
+		} else /* if (resizeMethod == MGImageResizeCropEnd) */ {  // has to be CropEnd by this point. Disable warning
 			// Crop bottom or right
 			if (scaleWidth) {
 				// Crop bottom
@@ -112,8 +112,13 @@
 	if (!image) {
 		// Try older method.
 		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-		CGContextRef context = CGBitmapContextCreate(NULL, scaledWidth, scaledHeight, 8, (scaledWidth * 4), 
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wenum-conversion"
+		CGContextRef context = CGBitmapContextCreate(NULL, scaledWidth, scaledHeight, 8, (scaledWidth * 4),
 													 colorSpace, kCGImageAlphaPremultipliedLast);
+#pragma clang diagnostic pop
+
 		CGImageRef sourceImg = CGImageCreateWithImageInRect([self CGImage], sourceRect);
 		CGContextDrawImage(context, destRect, sourceImg);
 		CGImageRelease(sourceImg);
